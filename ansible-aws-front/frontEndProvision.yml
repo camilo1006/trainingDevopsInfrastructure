@@ -1,0 +1,15 @@
+- hosts: all
+  become: true
+  tasks:
+  - name: "Crear directorio"
+    shell: mkdir -p /repository
+  - name: "Instalar npm"
+    apt: name=npm state=present update_cache=yes
+  - name: "Obtener repositorio"
+    git: clone=yes repo="https://github.com/camilo1006/trainingDevopsFront" dest=/repository/
+  - name: "Instalar dependencias"
+    shell: cd /repository/ && npm install
+  - name: "Instalar pm2"
+    npm: name=pm2 global=yes state=present
+  - name: "Iniciar servicio"
+    shell: cd /repository/ && pm2 start npm --name Front -- start
